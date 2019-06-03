@@ -831,6 +831,7 @@ GameObject:
   - component: {fileID: 2007552145797108241}
   - component: {fileID: 4241786385905810236}
   - component: {fileID: 7621748337336183022}
+  - component: {fileID: 2686541215240642120}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -898,7 +899,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 5
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -924,9 +925,11 @@ MonoBehaviour:
   spawnPointRight: {fileID: 2541456586706031805}
   spawnPointLeft: {fileID: 212800399938580558}
   moveSpeed: 5
+  jumpForce: 60000
   anim: {fileID: 8637191472261726324}
   PlayerName: {fileID: 3614618268626501327}
   DisableInputs: 0
+  IsGrounded: 0
 --- !u!114 &5191618576136589405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -966,6 +969,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 4241786385905810236}
   - {fileID: 7621748337336183022}
+  - {fileID: 2686541215240642120}
   viewIdField: 0
   InstantiationId: 2
   isRuntimeInstantiated: 0
@@ -1018,3 +1022,19 @@ MonoBehaviour:
   BubbleSpeech: {fileID: 1758033872734852902}
   ChatText: {fileID: 4908926747455938145}
   player: {fileID: 4236491033365170366}
+--- !u!114 &2686541215240642120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8637191472806192058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e7cb724808c322458aa4d15f5035fa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3

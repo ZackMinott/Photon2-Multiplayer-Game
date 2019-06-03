@@ -14,6 +14,7 @@ public class Cowboy : MonoBehaviourPunCallbacks
     public Transform spawnPointLeft;
 
     public float moveSpeed = 5f;
+    public float jumpForce;
 
     public Animator anim;
 
@@ -22,6 +23,9 @@ public class Cowboy : MonoBehaviourPunCallbacks
     public Text PlayerName;
 
     public bool DisableInputs = false;
+    public bool IsGrounded = false;
+
+    private Rigidbody2D rb;
 
     void Awake()
     {
@@ -38,6 +42,11 @@ public class Cowboy : MonoBehaviourPunCallbacks
             PlayerName.text = photonView.Owner.NickName;
         }
            
+    }
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
@@ -63,6 +72,11 @@ public class Cowboy : MonoBehaviourPunCallbacks
         {
             anim.SetBool("IsShot", false);
             AllowMoving = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded)
+        {
+            Jump();
         }
 
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
@@ -118,5 +132,26 @@ public class Cowboy : MonoBehaviourPunCallbacks
     private void FlipSprite_Left()
     {
         sprite.flipX = true;
+    }
+
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "Ground")
+        {
+            IsGrounded = true;
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "Ground")
+        {
+            IsGrounded = false;
+        }
+    }
+
+    void Jump()
+    {
+        rb.AddForce(new Vector2(0, jumpForce * Time.deltaTime));
     }
 }
