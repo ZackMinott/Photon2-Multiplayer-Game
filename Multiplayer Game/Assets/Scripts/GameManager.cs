@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourPunCallbacks
 {
+    public GameObject cpCanvas;
+    public ConnectedPlayer cp;
     public GameObject playerPrefab;
     public GameObject canvas;
     public GameObject sceneCam;
@@ -22,11 +25,21 @@ public class GameManager : MonoBehaviour
     public static GameManager instance = null;
 
     public GameObject LeaveScreen;
+    public GameObject feedbox;
+    public GameObject feedText_Prefab;
+    public GameObject killFeedbox;
 
     void Awake()
     {
+        //PhotonNetwork.OfflineMode = true : This ensures that no pun callbacks are made
         instance = this;
         canvas.SetActive(true);
+    }
+
+    void Start()
+    {
+        cp.AddLocalPlayer();
+        cp.GetComponent<PhotonView>().RPC("UpdatePlayerList", RpcTarget.OthersBuffered, PhotonNetwork.NickName);
     }
 
     void Update()
@@ -40,7 +53,33 @@ public class GameManager : MonoBehaviour
         {
             StartRespawn();
         }
+
+        if (Input.GetKey(KeyCode.Tab))
+        {
+            cpCanvas.SetActive(true);
+        }
+        else
+        {
+            cpCanvas.SetActive(false);
+        }
         pingRate.text = "Network Ping: " + PhotonNetwork.GetPing();
+    }
+
+    public override void OnPlayerEnteredRoom(Player player)
+    {
+        GameObject go = Instantiate(feedText_Prefab, new Vector2(0f,0f), Quaternion.identity);
+        go.transform.SetParent(feedbox.transform);
+        go.GetComponent<Text>().text = player.NickName + " has joined the game";
+        Destroy(go, 3);
+    }
+
+    public override void OnPlayerLeftRoom(Player player)
+    {
+        cp.RemovePlayerList(player.NickName);
+        GameObject go = Instantiate(feedText_Prefab, new Vector2(0f, 0f), Quaternion.identity);
+        go.transform.SetParent(feedbox.transform);
+        go.GetComponent<Text>().text = player.NickName + " has left the game";
+        Destroy(go, 3);
     }
 
     public void StartRespawn()

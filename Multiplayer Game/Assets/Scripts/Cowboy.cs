@@ -27,19 +27,24 @@ public class Cowboy : MonoBehaviourPunCallbacks
 
     private Rigidbody2D rb;
 
+    public string myName;
+
+
     void Awake()
     {
         if (photonView.IsMine)
         {
             GameManager.instance.localPlayer = this.gameObject;
             playerCamera.SetActive(true);
-            //playerCamera.transform.SetParent(null, false);
+            playerCamera.transform.SetParent(null, false);
             PlayerName.text = "You : " + PhotonNetwork.NickName;
             PlayerName.color = Color.green;
+            myName = PhotonNetwork.NickName;
         }
         else
         {
             PlayerName.text = photonView.Owner.NickName;
+            PlayerName.color = Color.blue;
         }
            
     }
@@ -87,7 +92,7 @@ public class Cowboy : MonoBehaviourPunCallbacks
         if (Input.GetKeyDown(KeyCode.D) && anim.GetBool("IsShot") == false)
         {   
             
-            //playerCamera.GetComponent<CameraFollow2D>().offset = new Vector3(1.3f, 1.5f, 0);
+            playerCamera.GetComponent<CameraFollow2D>().offset = new Vector3(1.3f, 1.5f, 0);
             PV.RPC("FlipSprite_Right", RpcTarget.AllBuffered);
         } else if (Input.GetKeyUp(KeyCode.D))
         {
@@ -96,7 +101,7 @@ public class Cowboy : MonoBehaviourPunCallbacks
 
         if (Input.GetKeyDown(KeyCode.A) && anim.GetBool("IsShot") == false)
         {
-            //playerCamera.GetComponent<CameraFollow2D>().offset = new Vector3(-1.3f, 1.5f, 0);
+            playerCamera.GetComponent<CameraFollow2D>().offset = new Vector3(-1.3f, 1.5f, 0);
             PV.RPC("FlipSprite_Left", RpcTarget.AllBuffered);
 
         }else if (Input.GetKeyUp(KeyCode.A))
@@ -111,11 +116,13 @@ public class Cowboy : MonoBehaviourPunCallbacks
         {
             GameObject bullet = PhotonNetwork.Instantiate(bulletPrefab.name, new Vector2(spawnPointRight.position.x, spawnPointRight.position.y),
                 Quaternion.identity, 0);
+            bullet.GetComponent<Bullet>().localPlayer = this.gameObject;
         }
         else if (sprite.flipX == true)
         {
             GameObject bullet = PhotonNetwork.Instantiate(bulletPrefab.name, new Vector2(spawnPointLeft.position.x, spawnPointLeft.position.y),
                 Quaternion.identity, 0);
+            bullet.GetComponent<Bullet>().localPlayer = this.gameObject;
             bullet.GetComponent<PhotonView>().RPC("ChangeDirection", RpcTarget.AllBuffered);
         }
         anim.SetBool("IsShot", true);

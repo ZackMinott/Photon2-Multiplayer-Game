@@ -15,6 +15,7 @@ public class Health : MonoBehaviourPun
     public GameObject playerCanvas;
 
     public Cowboy playerScript;
+    public GameObject killText;
 
     public void CheckHealth()
     {
@@ -59,6 +60,23 @@ public class Health : MonoBehaviourPun
     public void EnableInputs()
     {
         playerScript.DisableInputs = false;
+    }
+
+    [PunRPC]
+    void YouGotKilledBy(string name)
+    {
+        GameObject go = Instantiate(killText, new Vector2(0f, 0f), Quaternion.identity);
+        go.transform.SetParent(GameManager.instance.killFeedbox.transform, false);
+        go.GetComponent<Text>().text = "You got KILLED by: " + name;
+        go.GetComponent<Text>().color = Color.red;
+    }
+
+    [PunRPC]
+    void YouKilled(string name)
+    {
+        GameObject go = Instantiate(killText, new Vector2(0f, 0f), Quaternion.identity);
+        go.transform.SetParent(GameManager.instance.killFeedbox.transform, false);
+        go.GetComponent<Text>().text = "You KILLED " + name;
     }
 
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 public class Bullet : MonoBehaviourPunCallbacks
@@ -11,6 +12,15 @@ public class Bullet : MonoBehaviourPunCallbacks
     public float DestroyTime = 2f;
     public float bulletDamage = 0.3f;
 
+    public string killerName;
+    public GameObject localPlayer;
+
+
+    void Start()
+    {
+        if(photonView.IsMine)
+            killerName = localPlayer.GetComponent<Cowboy>().myName;
+    }
 
     IEnumerator DestroyBullet()
     {
@@ -57,6 +67,14 @@ public class Bullet : MonoBehaviourPunCallbacks
             if (target.tag == "Player")
             {
                 target.RPC("HealthUpdate", RpcTarget.AllBuffered, bulletDamage);
+                target.GetComponent<HurtEffect>().GotHit();
+
+                if (target.GetComponent<Health>().health <= 0)
+                {
+                    Player GotKilled = target.Owner;
+                    target.RPC("YouGotKilledBy", GotKilled, killerName);
+                    target.RPC("YouKilled", localPlayer.GetComponent<PhotonView>().Owner, target.Owner.NickName);
+                }
             }
             this.GetComponent<PhotonView>().RPC("Destroy", RpcTarget.AllBuffered);
         }
