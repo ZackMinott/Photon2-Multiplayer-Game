@@ -1,2 +1,3 @@
 # Photon2-Multiplayer-Game
-Photon 2 Course Content 
+
+Followed a course on creating a multiplayer game with Photon in Unity 3D
